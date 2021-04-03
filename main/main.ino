@@ -1,51 +1,54 @@
 //Pin variables for LEDs and the sensor
-int SensorPin = 5;
-int RED=6; 
-int YELLOW=7;  
-int GREEN=8;  
+#define SENSORPIN D0
+#define RED D6
+#define YELLOW D7 
+#define GREEN D8  
 
-int MeasureRange = 5000;
+float MeasureRange = 5000;
 unsigned long TimeMicroSecs; 
 unsigned long TimeMilliSecs; 
+const int WaitTime = 100;
 
-int PPM = 0; //PPM Measurement
+float PPM = 0; //PPM Measurement
 float Percentage = 0;
 
 
 void setup() {
   //Define In- and Output Pins
-  pinMode(SensorPin, INPUT);  
+  pinMode(SENSORPIN, INPUT);  
   pinMode(RED, OUTPUT); 
   pinMode(YELLOW, OUTPUT); 
   pinMode(GREEN,OUTPUT); 
   //start serial connection 
-  Serial.begin(9600);
+  Serial.begin(115200);
 }
 
 void loop() {
-  TimeMicroSecs = pulseIn(SensorPin, HIGH, 2000000); // get PWM signal
+  TimeMicroSecs = pulseIn(SENSORPIN, HIGH, 1004000); // get PWM signal
   TimeMilliSecs = TimeMicroSecs/1000; // convert microsecs in millisecs
-  float Percantage = TimeMilliSecs / 1004.0; // percantage indicates the ppm value as the pwm signal length over the available measurerange
+  Percentage = TimeMilliSecs / 1004.0; // percantage indicates the ppm value as the pwm signal length over the available measurerange
+  Serial.print("Percantage: ");
+  Serial.println(Percentage);
   PPM = MeasureRange * Percentage; // calculate the ppm value
   Serial.print("CO2 stake in PPM: ");
   Serial.println(PPM);
   //refresh the leds and wait for 1000millisecs
-  SetLedColor();
-  delay(1000);
+  SetLedColor(PPM);
+  delay(WaitTime);
 }
 
-void SetLedColor() {
+void SetLedColor(float PPM) {
   if (PPM < 800){
     digitalWrite(GREEN, HIGH);
     digitalWrite(YELLOW, LOW);
     digitalWrite(RED, LOW); 
   }
-  else if (PPM > 800 && PPM < 1200){
+  else if (PPM > 700 && PPM < 1100){
     digitalWrite(GREEN, LOW);
     digitalWrite(YELLOW, HIGH);
     digitalWrite(RED, LOW);
   }
-  else if (PPM > 1200){
+  else if (PPM > 1100){
     digitalWrite(GREEN, LOW);
     digitalWrite(YELLOW, LOW);
     digitalWrite(RED, HIGH);
