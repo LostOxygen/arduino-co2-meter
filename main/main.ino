@@ -43,12 +43,12 @@ void SetLedColor(float PPM) {
     digitalWrite(YELLOW, LOW);
     digitalWrite(RED, LOW); 
   }
-  else if (PPM > 700 && PPM < 1100){
+  else if (PPM > 800 && PPM < 1200){
     digitalWrite(GREEN, LOW);
     digitalWrite(YELLOW, HIGH);
     digitalWrite(RED, LOW);
   }
-  else if (PPM > 1100){
+  else if (PPM > 1200){
     digitalWrite(GREEN, LOW);
     digitalWrite(YELLOW, LOW);
     digitalWrite(RED, HIGH);
